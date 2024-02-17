@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using flexisource_exam.Exceptions;
 using flexisource_exam.Interfaces;
 using flexisource_exam.Models;
 
@@ -15,10 +16,17 @@ namespace flexisource_exam.Repositories
             // Implement logic to retrieve readings from the in-memory collection
             // based on stationId and count.
             // For example:
-            return _readings
+            var readings = _readings
                 .Where(r => r.StationId == stationId)
                 .OrderByDescending(r => r.DateMeasured)
                 .Take(count);
+
+            if (!readings.Any())
+            {
+                throw new RainfallNotFoundException();
+            }
+
+            return readings;
         }
 
         public RainfallReading AddReading(string stationId, RainfallReadingInputModel inputModel)
